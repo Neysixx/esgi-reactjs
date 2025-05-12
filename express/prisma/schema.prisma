@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String
+  fname    String
+  lname    String
+  phone    String
+  role     String    @default("client")
+  reservations Reservation[]
+}
+
+model Reservation {
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  numberOfPeople  Int
+  date            DateTime
+  time            String
+  status          String    @default("pending")
+  note            String?
+  tables          ReservationTable[]
+}
+
+model Table {
+  id     Int    @id @default(autoincrement())
+  seats  Int
+  reservations ReservationTable[]
+}
+
+model ReservationTable {
+  reservationId Int
+  tableId       Int
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+  table       Table       @relation(fields: [tableId], references: [id])
+
+  @@id([reservationId, tableId])
+}
+
+model MenuItem {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  category    String
+  image       String?
+}
