@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-
 const SECRET_KEY = process.env.JWT_SECRET || 'votre_cle_secrete';
 
 const authMiddleware = (req, res, next) => {
@@ -10,7 +9,11 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const payload = jwt.verify(token, SECRET_KEY);
-        req.user = payload; // { userId, role }
+        req.user = {
+            id: payload.userId,
+            role: payload.role,
+            isAdmin: payload.isAdmin || false
+        };
         next();
     } catch (err) {
         res.status(403).json({ error: 'Token invalide ou expiré' });

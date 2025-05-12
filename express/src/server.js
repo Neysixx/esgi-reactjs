@@ -1,11 +1,21 @@
 const express = require('express');
 const app = express();
 const authRoutes = require('./routes/auth-route');
+const reservationRoutes = require('./routes/reservation-route');
+const menuRoutes = require('./routes/menu-route');
+const tableRoutes = require('./routes/table-route');
 
 app.use(express.json());
-app.use('/auth', authRoutes);
 
-// Exemple route protégée
+// Routes publiques
+app.use('/auth', authRoutes);
+app.use('/menu', menuRoutes); // GET menu est public
+
+// Routes protégées (via middleware dans les fichiers de route déjà)
+app.use('/reservations', reservationRoutes);
+app.use('/tables', tableRoutes);
+
+// Exemple de route test
 const authMiddleware = require('./middleware/auth-middleware');
 app.get('/protected', authMiddleware, (req, res) => {
     res.json({ message: 'Accès autorisé', user: req.user });

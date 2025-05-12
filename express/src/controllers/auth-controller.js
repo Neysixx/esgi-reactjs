@@ -52,3 +52,53 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: 'Erreur serveur' });
     }
 };
+
+exports.loginAdmin = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const admin = await prisma.admin.findUnique({ where: { email } });
+        if (!admin) return res.status(401).json({ error: 'Email incorrect' });
+
+        const valid = await bcrypt.compare(password, admin.password);
+        if (!valid) return res.status(401).json({ error: 'Mot de passe incorrect' });
+
+        const token = jwt.sign(
+            { userId: admin.id, role: 'admin', isAdmin: true },
+            SECRET_KEY,
+            { expiresIn: '2h' }
+        );
+
+        res.status(200).json({ token });
+    } catch (err) {
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+};
+
+exports.signupAdmin = async (req, res) => {
+    const { email, password, fname, lname, phone } = req.body;
+
+    if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
+
+    try {
+        const existing = await prisma.admin.findUnique({ where: { email } });
+        if (existing) return res.status(400).json({ error: 'Administrateur déjà existant' });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const admin = await prisma.admin.create({
+            data: {
+                email,
+                password: hashedPassword,
+                fname,
+                lname,
+                phone
+            }
+        });
+
+        res.status(201).json({ message: 'Administrateur créé', adminId: admin.id });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+};
