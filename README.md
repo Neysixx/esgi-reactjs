@@ -6,8 +6,8 @@ API REST complète avec Node.js, Express et MySQL permettant de gérer les rése
 
 ```bash
 # Cloner le projet
-git clone [repo-url]
-cd restaurant-api
+git clone git@github.com:Neysixx/esgi-reactjs.git
+cd esgi-reactjs
 
 # Installer les dépendances
 npm install
@@ -19,6 +19,9 @@ JWT_SECRET="votre_cle_secrete"
 
 # Migrer la base de données
 npx prisma migrate dev
+
+# Seeder la base de données
+npm run db:seed
 
 # Démarrer le serveur
 npm start
@@ -93,12 +96,6 @@ L'API attribue automatiquement les tables en fonction du nombre de personnes:
 | admin@restaurant.com | admin123 | admin |
 | client@example.com | client123 | client |
 
-## Auteurs
-
-- [Nom Prénom] - [Fonctionnalité 1, Fonctionnalité 2]
-- [Nom Prénom] - [Fonctionnalité 3, Fonctionnalité 4]
-- [Nom Prénom] - [Fonctionnalité 5, Fonctionnalité 6]
-- [Nom Prénom] - [Fonctionnalité 7, Fonctionnalité 8]
 
 ## 👥 Équipe
 
@@ -168,9 +165,9 @@ Utiliser **Postman**.
 ## 🧰 Installation
 
 ```bash
-git clone https://github.com/votre-repo/api-restaurant
-cd api-restaurant
+git clone git@github.com:Neysixx/esgi-reactjs.git
+cd esgi-reactjs
 npm install
-cp .env.example .env
-# Remplir les infos BDD dans .env
+npm run db:seed
 npm start
+```
