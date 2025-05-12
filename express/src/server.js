@@ -4,6 +4,7 @@ const authRoutes = require('./routes/auth-route');
 const reservationRoutes = require('./routes/reservation-route');
 const menuRoutes = require('./routes/menu-route');
 const tableRoutes = require('./routes/table-route');
+const authMiddleware = require('./middleware/auth-middleware');
 
 app.use(express.json());
 
@@ -15,10 +16,8 @@ app.use('/menu', menuRoutes); // GET menu est public
 app.use('/reservations', reservationRoutes);
 app.use('/tables', tableRoutes);
 
-// Exemple de route test
-const authMiddleware = require('./middleware/auth-middleware');
-app.get('/protected', authMiddleware, (req, res) => {
-    res.json({ message: 'Accès autorisé', user: req.user });
+app.get('/me', authMiddleware,(req, res) => {
+    res.json({ message: `Hello ${JSON.stringify(req.user)}` });
 });
 
 const PORT = process.env.PORT || 3000;
