@@ -8,31 +8,31 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  password String
-  fname    String
-  lname    String
-  phone    String
-  role     String    @default("client")
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  password     String
+  fname        String
+  lname        String
+  phone        String
+  role         String        @default("client")
   reservations Reservation[]
 }
 
 model Reservation {
-  id              Int       @id @default(autoincrement())
-  userId          Int
-  user            User      @relation(fields: [userId], references: [id])
-  numberOfPeople  Int
-  date            DateTime
-  time            String
-  status          String    @default("pending")
-  note            String?
-  tables          ReservationTable[]
+  id             Int                @id @default(autoincrement())
+  userId         Int
+  user           User               @relation(fields: [userId], references: [id])
+  numberOfPeople Int
+  date           DateTime
+  time           String
+  status         String             @default("pending")
+  note           String?
+  tables         ReservationTable[]
 }
 
 model Table {
-  id     Int    @id @default(autoincrement())
-  seats  Int
+  id           Int                @id @default(autoincrement())
+  seats        Int
   reservations ReservationTable[]
 }
 

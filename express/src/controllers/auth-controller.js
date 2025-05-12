@@ -3,11 +3,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'votre_cle_secrete';
+const AVAILABLE_ROLES = ['client', 'admin'];
 
 exports.signup = async (req, res) => {
-    const { email, password, fname, lname, phone } = req.body;
+    const { email, password, fname, lname, phone, role } = req.body;
 
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
+
+    if (!AVAILABLE_ROLES.includes(role)) return res.status(400).json({ error: 'Rôle invalide' });
 
     try {
         const existing = await prisma.user.findUnique({ where: { email } });
@@ -22,6 +25,7 @@ exports.signup = async (req, res) => {
                 fname,
                 lname,
                 phone,
+                role: role || 'client',
             },
         });
 
@@ -42,7 +46,13 @@ exports.login = async (req, res) => {
         if (!valid) return res.status(401).json({ error: 'Mot de passe incorrect' });
 
         const token = jwt.sign(
-            { userId: user.id, role: user.role },
+            { 
+                userId: user.id, 
+                role: user.role,
+                fname: user.fname,
+                lname: user.lname,
+                isAdmin: user.role === 'admin'
+            },
             SECRET_KEY,
             { expiresIn: '2h' }
         );
